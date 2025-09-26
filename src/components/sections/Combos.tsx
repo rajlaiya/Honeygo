@@ -1,0 +1,78 @@
+import { motion } from 'framer-motion';
+import { SectionWrapper } from '../ui/SectionWrapper';
+import { useCart, type Product } from '../../context/CartContext';
+import { useMemo } from 'react';
+
+interface Combo extends Product { items: string[]; original: number; }
+
+const comboBase: (Omit<Combo,'image'> & { imagePool: string[] })[] = [
+  {
+    id: 'taster-pack',
+    name: 'Taster Flight Pack',
+    price: 32,
+    original: 40,
+    imagePool: [
+      'https://sc04.alicdn.com/kf/H1d7101e21b2d4eecbbbdc966acc82bb8K/227759182/H1d7101e21b2d4eecbbbdc966acc82bb8K.jpg',
+    ],
+    items: ['Wildflower 150g', 'Forest 150g', 'Acacia 150g'],
+    description: 'Explore three terroirs side-by-side.'
+  },
+  {
+    id: 'immune-boost',
+    name: 'Immunity Boost Duo',
+    price: 26,
+    original: 30,
+    imagePool: [
+      'https://asmitaorganicfarm.com/cdn/shop/articles/feature_image-01_1.jpg?v=1732791937&width=1100',
+    ],
+    items: ['Forest 250g', 'Citrus 250g'],
+    description: 'A duo designed to enhance your immune system.'
+  },
+  {
+    id: 'gift-crate',
+    name: 'Artisan Gift Crate',
+    price: 54,
+    original: 65,
+    imagePool: [
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV8CV2agHY_-V3YjOraNvrXdoRDNYoNOjLEQ&s',
+    ],
+    items: ['Acacia 250g', 'Wildflower 250g', 'Forest 250g'],
+    description: 'A curated selection for gifting and special occasions.'
+  }
+];
+
+export const Combos = () => {
+  const { addToCart } = useCart();
+  const combos: Combo[] = useMemo(() => comboBase.map(c => ({...c, image: c.imagePool[Math.floor(Math.random()*c.imagePool.length)] } as Combo)), []);
+  return (
+    <SectionWrapper id="combos" className="bg-[#0e0905] text-honey-50">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Combo Packs & Bundles</h2>
+        <p className="text-honey-100/70 max-w-2xl mx-auto">Curated bundles designed for tasting sessions, immune support, and gifting moments. Save more while exploring depth & nuance.</p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-8">
+        {combos.map(c => (
+          <motion.div key={c.id} whileHover={{ y: -6 }} className="relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img src={c.image} alt={c.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-[2000ms]" />
+            </div>
+            <div className="p-6 flex flex-col h-64">
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-semibold text-honey-200 text-lg leading-tight">{c.name}</h3>
+                <span className="text-xs bg-honey-600/20 text-honey-300 px-2 py-1 rounded-full font-medium">Save {Math.round((1 - c.price / c.original) * 100)}%</span>
+              </div>
+              <p className="text-sm text-honey-100/60 mt-2 flex-1">{c.description}</p>
+              <ul className="text-[11px] text-honey-100/50 mt-2 space-y-1 tracking-wide">
+                {c.items.map(it => <li key={it}>• {it}</li>)}
+              </ul>
+              <div className="mt-4 flex items-center justify-between">
+                <div className="text-honey-400 font-bold">${c.price.toFixed(2)} <span className="text-xs text-honey-100/40 line-through">${c.original.toFixed(0)}</span></div>
+                <motion.button whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.95 }} onClick={() => addToCart(c)} className="px-4 py-2 rounded-full bg-honey-500 text-black text-sm font-semibold hover:bg-honey-400 shadow-glow">Add</motion.button>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+};
