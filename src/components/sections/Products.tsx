@@ -104,7 +104,7 @@ export const Products = () => {
           <p className="text-xs text-honey-100/50 mb-4">Showing {shown.length} / {products.length} products</p>
         );
       })()}
-  <div ref={containerRef} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <div ref={containerRef} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
         {(() => {
           let shown = [...products];
           if (filters.query) {
@@ -130,16 +130,16 @@ export const Products = () => {
             <div className="aspect-square overflow-hidden">
               <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1800ms]" loading="lazy" />
             </div>
-            <div className="p-5 flex flex-col h-56">
-              <h3 className="font-semibold text-honey-200 text-lg mb-1">{p.name}</h3>
-              <p className="text-sm text-honey-100/60 flex-1">{p.description}</p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="font-bold text-honey-400">${p.price.toFixed(2)}</span>
+            <div className="p-3 sm:p-5 flex flex-col h-auto sm:h-56">
+              <h3 className="font-semibold text-honey-200 text-sm sm:text-lg mb-1 line-clamp-1">{p.name}</h3>
+              <p className="text-xs sm:text-sm text-honey-100/60 flex-1 line-clamp-2 sm:line-clamp-none">{p.description}</p>
+              <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <span className="font-bold text-honey-400 text-sm sm:text-base">${p.price.toFixed(2)}</span>
                 <motion.button
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => addToCart(p)}
-                  className="px-4 py-2 rounded-full bg-honey-500 text-black text-sm font-semibold hover:bg-honey-400 shadow-glow"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-honey-500 text-black text-xs sm:text-sm font-semibold hover:bg-honey-400 shadow-glow w-full sm:w-auto text-center"
                 >
                   Add to Cart
                 </motion.button>

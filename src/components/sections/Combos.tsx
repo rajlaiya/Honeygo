@@ -50,24 +50,24 @@ export const Combos = () => {
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Combo Packs & Bundles</h2>
         <p className="text-honey-100/70 max-w-2xl mx-auto">Curated bundles designed for tasting sessions, immune support, and gifting moments. Save more while exploring depth & nuance.</p>
       </div>
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
         {combos.map(c => (
           <motion.div key={c.id} whileHover={{ y: -6 }} className="relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg">
             <div className="aspect-[4/3] overflow-hidden">
               <img src={c.image} alt={c.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-[2000ms]" />
             </div>
-            <div className="p-6 flex flex-col h-64">
-              <div className="flex items-start justify-between gap-3">
-                <h3 className="font-semibold text-honey-200 text-lg leading-tight">{c.name}</h3>
-                <span className="text-xs bg-honey-600/20 text-honey-300 px-2 py-1 rounded-full font-medium">Save {Math.round((1 - c.price / c.original) * 100)}%</span>
+            <div className="p-3 sm:p-6 flex flex-col h-auto sm:h-64">
+              <div className="flex items-start justify-between gap-1 sm:gap-3">
+                <h3 className="font-semibold text-honey-200 text-sm sm:text-lg leading-tight line-clamp-2">{c.name}</h3>
+                <span className="text-[9px] sm:text-xs bg-honey-600/20 text-honey-300 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap">Save {Math.round((1 - c.price / c.original) * 100)}%</span>
               </div>
-              <p className="text-sm text-honey-100/60 mt-2 flex-1">{c.description}</p>
-              <ul className="text-[11px] text-honey-100/50 mt-2 space-y-1 tracking-wide">
+              <p className="text-xs sm:text-sm text-honey-100/60 mt-1 sm:mt-2 flex-1 line-clamp-2 sm:line-clamp-none">{c.description}</p>
+              <ul className="text-[10px] sm:text-[11px] text-honey-100/50 mt-1 sm:mt-2 space-y-0.5 sm:space-y-1 tracking-wide hidden sm:block">
                 {c.items.map(it => <li key={it}>• {it}</li>)}
               </ul>
-              <div className="mt-4 flex items-center justify-between">
-                <div className="text-honey-400 font-bold">${c.price.toFixed(2)} <span className="text-xs text-honey-100/40 line-through">${c.original.toFixed(0)}</span></div>
-                <motion.button whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.95 }} onClick={() => addToCart(c)} className="px-4 py-2 rounded-full bg-honey-500 text-black text-sm font-semibold hover:bg-honey-400 shadow-glow">Add</motion.button>
+              <div className="mt-2 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-0">
+                <div className="text-honey-400 font-bold text-sm sm:text-base">${c.price.toFixed(2)} <span className="text-[10px] sm:text-xs text-honey-100/40 line-through">${c.original.toFixed(0)}</span></div>
+                <motion.button whileHover={{ scale: 1.07 }} whileTap={{ scale: 0.95 }} onClick={() => addToCart(c)} className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-honey-500 text-black text-xs sm:text-sm font-semibold hover:bg-honey-400 shadow-glow w-full sm:w-auto text-center">Add</motion.button>
               </div>
             </div>
           </motion.div>
