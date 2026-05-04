@@ -53,8 +53,13 @@ export const Combos = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
         {combos.map(c => (
           <motion.div key={c.id} whileHover={{ y: -6 }} className="relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg">
-            <div className="aspect-[4/3] overflow-hidden">
+            <div className="relative aspect-[4/3] overflow-hidden">
               <img src={c.image} alt={c.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-[2000ms]" />
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/30 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.4em] rotate-[-12deg]">Hey Honey</span>
+                </div>
+              </div>
             </div>
             <div className="p-3 sm:p-6 flex flex-col h-auto sm:h-64">
               <div className="flex items-start justify-between gap-1 sm:gap-3">

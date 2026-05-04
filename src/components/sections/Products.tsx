@@ -127,8 +127,13 @@ export const Products = () => {
     className="product-card group relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg will-change-transform"
     style={{ transform: 'perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))', transition: 'transform 0.25s ease' }}
           >
-            <div className="aspect-square overflow-hidden">
+            <div className="relative aspect-square overflow-hidden">
               <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1800ms]" loading="lazy" />
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white/30 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.4em] rotate-[-12deg]">Hey Honey</span>
+                </div>
+              </div>
             </div>
             <div className="p-3 sm:p-5 flex flex-col h-auto sm:h-56">
               <h3 className="font-semibold text-honey-200 text-sm sm:text-lg mb-1 line-clamp-1">{p.name}</h3>

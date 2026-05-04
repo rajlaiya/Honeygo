@@ -224,7 +224,7 @@ export const ScratchCoupon = ({
             </svg>
           </div>
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-honey-300">HoneyGo Rewards</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-honey-300">Hey Honey Rewards</p>
             <p className="text-[10px] text-honey-100/40">Scratch to reveal your coupon</p>
           </div>
         </div>

@@ -163,7 +163,7 @@ export const ContactFooter = () => {
         </div>
       </SectionWrapper>
       <div className="border-t border-honey-800/40 py-6 text-center text-xs text-honey-100/50">
-        © {new Date().getFullYear()} HoneyGo. Crafted with care. All rights reserved.
+        © {new Date().getFullYear()} Hey Honey. Crafted with care. All rights reserved.
       </div>
       {/* Policy Dialog */}
       {policy && (
