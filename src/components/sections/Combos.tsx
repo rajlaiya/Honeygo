@@ -45,7 +45,7 @@ export const Combos = () => {
   const { addToCart } = useCart();
   const combos: Combo[] = useMemo(() => comboBase.map(c => ({...c, image: c.imagePool[Math.floor(Math.random()*c.imagePool.length)] } as Combo)), []);
   return (
-    <SectionWrapper id="combos" className="bg-[#0e0905] text-honey-50">
+    <SectionWrapper id="combos" className="text-honey-50">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Combo Packs & Bundles</h2>
         <p className="text-honey-100/70 max-w-2xl mx-auto">Curated bundles designed for tasting sessions, immune support, and gifting moments. Save more while exploring depth & nuance.</p>

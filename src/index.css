@@ -4,7 +4,7 @@
 
 
 html, body, #root { height: 100%; }
-body { background:#000; color:#fff; font-family: 'Inter', ui-sans-serif, system-ui; -webkit-font-smoothing:antialiased; }
+body { background:#000; color:#fff; font-family: 'Manrope', sans-serif; -webkit-font-smoothing:antialiased; }
 
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: #1a1209; }
@@ -18,3 +18,35 @@ body { background:#000; color:#fff; font-family: 'Inter', ui-sans-serif, system-
 }
 
 .honey-drip { animation: drip 12s linear infinite; }
+
+@keyframes natureDrift {
+	0% {
+		background-position: 0% 0%, 100% 10%, 50% 100%, 0% 0%;
+	}
+	50% {
+		background-position: 15% 12%, 70% 35%, 55% 88%, 0% 0%;
+	}
+	100% {
+		background-position: 0% 0%, 100% 10%, 50% 100%, 0% 0%;
+	}
+}
+
+.nature-bg {
+	background-image:
+		radial-gradient(circle at 12% 18%, rgba(255, 214, 120, 0.35), transparent 55%),
+		radial-gradient(circle at 85% 25%, rgba(138, 186, 110, 0.28), transparent 55%),
+		radial-gradient(circle at 50% 85%, rgba(255, 179, 89, 0.25), transparent 60%),
+		linear-gradient(120deg, rgba(255, 249, 236, 0.7), rgba(240, 233, 206, 0.7), rgba(226, 242, 222, 0.7));
+	background-size: 140% 140%, 150% 150%, 160% 160%, 100% 100%;
+	background-position: 0% 0%, 100% 10%, 50% 100%, 0% 0%;
+	animation: natureDrift 28s ease-in-out infinite;
+}
+
+.nature-overlay {
+	background: linear-gradient(
+		180deg,
+		rgba(12, 9, 6, 0.45) 0%,
+		rgba(12, 9, 6, 0.18) 45%,
+		rgba(12, 9, 6, 0.48) 100%
+	);
+}

@@ -66,7 +66,7 @@ export const Reviews = () => {
   }, []);
 
   return (
-    <SectionWrapper id="reviews" className="bg-black text-honey-50 overflow-hidden">
+    <SectionWrapper id="reviews" className="text-honey-50 overflow-hidden">
       <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-6 text-center">Customer Love</h2>
       <p className="text-center text-honey-100/70 mb-10 text-sm max-w-xl mx-auto">Share your experience with our raw honeys and help others discover their next favorite jar.</p>
       <div className="relative mb-12">

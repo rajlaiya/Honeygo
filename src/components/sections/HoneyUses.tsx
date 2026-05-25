@@ -75,7 +75,7 @@ export const HoneyUses = () => {
   return (
     <SectionWrapper
       id="honey-uses"
-      className="bg-black/95"
+      className="text-honey-50"
       animation={(el) => {
         const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const header = el.querySelector('.uses-header');

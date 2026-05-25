@@ -2,7 +2,7 @@ import { SectionWrapper } from '../ui/SectionWrapper';
 
 export const About = () => {
   return (
-    <SectionWrapper id="about" className="bg-black text-honey-50">
+    <SectionWrapper id="about" className="text-honey-50">
       <div className="grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-6">Why Our Honey?</h2>

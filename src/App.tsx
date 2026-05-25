@@ -13,6 +13,7 @@ import { CartSidebar } from './components/sections/CartSidebar';
 import { CartProvider } from './context/CartContext';
 import { BackToTop } from './components/ui/BackToTop';
 import { HoneyLoader } from './components/ui/HoneyLoader';
+import { SideNav } from './components/ui/SideNav';
 import { useState, useEffect } from 'react';
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
       <HoneyLoader onFinish={() => { /* can hook analytics */ }} />
       {ready && (
         <div className="font-body bg-black text-white min-h-screen selection:bg-honey-400/40 selection:text-honey-100 cursor-goldring">
+          <SideNav />
           <Hero />
           <Banner />
           <About />

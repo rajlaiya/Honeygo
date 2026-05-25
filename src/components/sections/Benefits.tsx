@@ -68,7 +68,7 @@ export const Benefits = () => {
   return (
     <SectionWrapper
       id="benefits"
-      className="bg-gradient-to-b from-black via-neutral-900 to-black"
+      className="text-honey-50"
       animation={(el) => {
         const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const header = el.querySelector('.benefits-header');

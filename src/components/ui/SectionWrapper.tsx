@@ -46,8 +46,10 @@ export const SectionWrapper = ({ id, children, className = '', triggerOnce = tru
   }, [animation, triggerOnce]);
 
   return (
-    <section id={id} ref={ref} className={`relative py-24 md:py-32 ${className}`}>
-      <div className="container mx-auto px-4 max-w-7xl">{children}</div>
+    <section id={id} ref={ref} className={`relative overflow-hidden py-24 md:py-32 ${className}`}>
+      <div className="absolute inset-0 nature-bg" aria-hidden />
+      <div className="absolute inset-0 nature-overlay" aria-hidden />
+      <div className="relative z-10 container mx-auto px-4 max-w-7xl">{children}</div>
     </section>
   );
 };

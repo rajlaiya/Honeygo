@@ -1,10 +1,9 @@
 import { motion } from 'framer-motion';
 import { SectionWrapper } from '../ui/SectionWrapper';
-import { ScratchCoupon } from '../ui/ScratchCoupon';
 
 export const Banner = () => {
   return (
-  <SectionWrapper className="relative bg-[linear-gradient(135deg,#1a1209,#332310)] py-16 md:py-24 overflow-hidden rounded-t-[5rem] rounded-b-[5rem] md:rounded-t-[8rem] md:rounded-b-[8rem]">
+    <SectionWrapper className="relative py-16 md:py-24 overflow-hidden rounded-t-[5rem] rounded-b-[5rem] md:rounded-t-[8rem] md:rounded-b-[8rem]">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -31,13 +30,28 @@ export const Banner = () => {
           </div>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.94 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
           className="relative"
         >
-          <ScratchCoupon />
+          <div className="relative rounded-3xl border border-honey-500/20 bg-black/30 p-6 backdrop-blur-sm">
+            <div className="flex items-center justify-between text-[0.65rem] uppercase tracking-[0.3em] text-honey-300">
+              <span>Harvest batch</span>
+              <span className="text-honey-400">Limited</span>
+            </div>
+            <img
+              src="https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=700&q=80"
+              alt="Wildflower honey jar"
+              className="mx-auto mt-6 w-64 rounded-2xl object-cover shadow-[0_30px_60px_rgba(10,6,2,0.4)]"
+              loading="lazy"
+            />
+            <div className="mt-6 flex items-center justify-between text-sm text-honey-100/70">
+              <span>Raw and unfiltered</span>
+              <span>340g</span>
+            </div>
+          </div>
           <div className="absolute -inset-6 bg-gradient-to-br from-honey-500/0 via-honey-500/0 to-honey-500/5 rounded-3xl pointer-events-none" />
         </motion.div>
       </div>

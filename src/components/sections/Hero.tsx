@@ -1,101 +1,149 @@
 import { motion } from 'framer-motion';
-import { useRef, useLayoutEffect } from 'react';
-import { gsap } from 'gsap';
+import beeVideo from '../../assets/realistic_flying_honeybee_vide.mp4';
 
-// Hero with ONLY floating honey PNG drops
 export const Hero = () => {
-  const dropsRef = useRef<HTMLDivElement | null>(null);
-
-  useLayoutEffect(() => {
-    const root = dropsRef.current;
-    if (!root) return;
-    const ctx = gsap.context(() => {
-      const imgs = root.querySelectorAll<HTMLImageElement>('.honey-png');
-      imgs.forEach(img => {
-        const left = parseFloat(img.dataset.left || '0');
-        const top = parseFloat(img.dataset.top || '-200');
-        gsap.set(img, { left: left + '%', top });
-        const startY = top;
-        const endY = window.innerHeight + 140;
-        const duration = 16 + Math.random() * 10; // 16 - 26s
-        const delay = Math.random() * 6;
-        const drift = Math.random() * 60 - 30;
-        gsap.fromTo(
-          img,
-          { y: startY, x: '+=' + (Math.random() * 40 - 20), opacity: 0 },
-          { y: endY, x: '+=' + drift, opacity: gsap.utils.random(0.55, 0.9), duration, delay, ease: 'none', repeat: -1 }
-        );
-      });
-    }, dropsRef);
-    return () => ctx.revert();
-  }, []);
+  const features = [
+    {
+      title: 'Single origin',
+      description: 'Forest and meadow apiaries',
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+          <path
+            d="M12 3c-4 2.5-7 6-7 10.2C5 17.1 7.9 20 12 20s7-2.9 7-6.8C19 9 16 5.5 12 3z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+          <path d="M8 13.5c1.8-1.5 4.1-2.5 7.4-3.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      )
+    },
+    {
+      title: 'Velvet texture',
+      description: 'Slow-spun micro batches',
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+          <path
+            d="M12 2c3.7 5 6 7.6 6 11.2A6 6 0 1 1 6 13.2C6 9.6 8.3 7 12 2z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )
+    },
+    {
+      title: 'Naturally sweet',
+      description: 'No added sugar or flavor',
+      icon: (
+        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
+          <rect x="6" y="7" width="12" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <path d="M9 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M9 12h6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      )
+    }
+  ];
 
   return (
-    <section className="relative h-screen flex items-center justify-center text-center overflow-hidden bg-gradient-to-b from-black via-neutral-950 to-black">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_40%,rgba(255,200,52,0.18),transparent_65%)]" />
-      <div ref={dropsRef} className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 10 }).map((_, i) => {
-          const size = Math.random() * 80 + 70; // 70 - 150
-          const left = Math.random() * 100;
-          const top = -160 - Math.random() * 260; // start above view
-          const blur = Math.random() < 0.3 ? ' blur-[2px]' : '';
-          return (
-            <img
-              key={i}
-              src="https://static.vecteezy.com/system/resources/thumbnails/056/564/742/small_2x/large-golden-drop-of-pure-honey-with-a-translucent-surface-and-rich-amber-color-free-png.png"
-              width={size}
-              height={size}
-              alt=""
-              role="presentation"
-              data-left={left}
-              data-top={top}
-              className={`honey-png absolute select-none opacity-0 will-change-transform${blur}`}
-              loading="eager"
-            />
-          );
-        })}
+    <section id="home" className="relative overflow-hidden bg-[#fff9ec] text-amber-950">
+      <div className="absolute inset-0" aria-hidden>
+        <video
+          className="h-full w-full object-cover brightness-90 saturate-110"
+          src={beeVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(22,14,6,0.35)_0%,rgba(255,241,210,0.55)_45%,rgba(255,248,230,0.82)_100%)]" />
       </div>
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="relative z-10 px-6"
-      >
-        <motion.h1
-          className="font-display text-4xl md:text-6xl font-bold text-honey-100 drop-shadow-md"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          Pure. Natural. Artisanal Honey.
-        </motion.h1>
-        <motion.p
-          className="mt-6 text-lg md:text-2xl text-honey-50 max-w-2xl mx-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-        >
-          Sourced sustainably from wildflower meadows & forest apiaries. Taste the authentic sweetness of nature.
-        </motion.p>
-        <motion.div className="mt-10 flex gap-4 justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-3 rounded-full bg-honey-500 text-black font-semibold shadow-glow hover:bg-honey-400 transition-colors"
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,214,102,0.45),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_35%,rgba(255,193,72,0.35),transparent_60%)]" />
+        <div className="absolute -left-28 bottom-12 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(255,200,90,0.35),transparent_70%)]" />
+        <div className="absolute -right-24 top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(255,180,46,0.3),transparent_70%)]" />
+        <div className="absolute left-0 right-0 top-0 h-16 bg-gradient-to-b from-[#f2b833] to-transparent" />
+        <span className="absolute left-[12%] top-0 h-12 w-12 rounded-b-full bg-[#f2b833]" />
+        <span className="absolute left-[46%] top-0 h-16 w-14 rounded-b-full bg-[#f2b833]" />
+        <span className="absolute left-[78%] top-0 h-10 w-10 rounded-b-full bg-[#f2b833]" />
+      </div>
+
+      <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-center gap-12 px-6 pb-20 pt-28 text-center">
+        <div className="max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-3 rounded-full bg-[#fff1c8] px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-amber-700"
           >
-            Shop Now
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-8 py-3 rounded-full bg-transparent border border-honey-300 text-honey-200 font-semibold hover:bg-honey-600/20 backdrop-blur-sm"
+            <span className="h-2 w-2 rounded-full bg-amber-500" />
+            Limited seasonal harvest
+          </motion.div>
+          <motion.h1
+            className="mt-6 font-display text-4xl font-semibold leading-tight md:text-6xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
-            Learn More
-          </motion.button>
-        </motion.div>
-      </motion.div>
+            A new look at a timeless indulgence.
+            <span className="block text-honey-700">Pure honey with depth and warmth.</span>
+          </motion.h1>
+          <motion.p
+            className="mt-5 text-base text-amber-900/70 md:text-lg"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            Raw, unfiltered, and slow-crafted from wildflower blooms. Enjoy a rich flavor with a smooth finish and no added sugar.
+          </motion.p>
+
+          <motion.div
+            className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+              className="rounded-full bg-honey-500 px-8 py-3 text-sm font-semibold text-black shadow-[0_18px_40px_rgba(255,200,52,0.35)] transition-colors hover:bg-honey-400"
+            >
+              Shop the harvest
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+              className="rounded-full border border-amber-400/60 px-8 py-3 text-sm font-semibold text-amber-900/80 transition-colors hover:bg-amber-100"
+            >
+              Learn our story
+            </motion.button>
+          </motion.div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {features.map(feature => (
+              <div key={feature.title} className="flex items-start gap-3 rounded-2xl bg-white/70 p-4 text-left shadow-[0_12px_28px_rgba(120,72,8,0.08)]">
+                <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                  {feature.icon}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-amber-900">{feature.title}</p>
+                  <p className="text-xs text-amber-900/60">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 text-xs uppercase tracking-[0.3em] text-amber-700/70">
+            Free shipping over $40
+          </p>
+        </div>
+      </div>
     </section>
   );
 };

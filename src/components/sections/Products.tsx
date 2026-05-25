@@ -79,7 +79,7 @@ export const Products = () => {
   }, []);
 
   return (
-    <SectionWrapper id="products" className="bg-gradient-to-b from-black to-[#140d06] text-honey-50">
+    <SectionWrapper id="products" className="text-honey-50">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Our Collection</h2>
         <p className="text-honey-100/80 max-w-2xl mx-auto">Curated raw honeys capturing the unique flavor profile of diverse terroirs and blooming seasons.</p>

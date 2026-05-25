@@ -22,8 +22,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Poppins", "ui-sans-serif", "system-ui"],
-        body: ["Inter", "ui-sans-serif", "system-ui"],
+        display: ["Fraunces", "serif"],
+        body: ["Manrope", "sans-serif"],
       },
       boxShadow: {
         glow: "0 0 0 3px rgba(255,200,52,0.3)",

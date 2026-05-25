@@ -75,7 +75,7 @@ export const Gallery = () => {
   const loopImages = [...imagesBase, ...imagesBase];
 
   return (
-    <SectionWrapper id="gallery" className="bg-black text-honey-50">
+    <SectionWrapper id="gallery" className="text-honey-50">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Harvest Moments</h2>
         <p className="text-honey-100/70 max-w-2xl mx-auto">Behind-the-scenes glimpses from forest edges, wildflower fields, and artisan extraction days.</p>

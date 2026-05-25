@@ -45,7 +45,7 @@ export const ContactFooter = () => {
   };
 
   return (
-    <footer className="bg-[#0b0704] text-honey-50">
+    <footer className="bg-transparent text-honey-50">
       <SectionWrapper id="contact" className="py-24 md:py-28">
         {/* Two-column layout: left = form, right = stacked info blocks */}
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
