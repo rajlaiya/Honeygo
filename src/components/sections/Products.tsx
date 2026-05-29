@@ -4,49 +4,144 @@ import { useCart, type Product } from '../../context/CartContext';
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { SearchFilterBar, type ProductFilterState } from '../ui/SearchFilterBar';
 
-interface ProductVariantBase { id: string; name: string; price: number; description: string; imagePool: string[] }
+const HONEY_TYPES = ['Monofloral Honey', 'Multifloral Honey', 'Special Honey', 'Honeydew', 'Combos'] as const;
+type HoneyType = typeof HONEY_TYPES[number];
+
+interface ProductVariantBase { id: string; name: string; price: number; description: string; imagePool: string[]; honeyType: HoneyType }
+const MONOFLORAL_NAMES = [
+  'Acacia Honey',
+  'Manuka Honey',
+  'Clover Honey',
+  'Sidr Honey',
+  'Eucalyptus Honey',
+  'Lavender Honey',
+  'Orange Blossom Honey',
+  'Sunflower Honey',
+  'Mustard Honey',
+  'Buckwheat Honey',
+  'Lychee Honey',
+  'Jamun Honey',
+  'Neem Honey',
+  'Tulsi Honey',
+  'Coriander Honey',
+  'Sage Honey',
+  'Rosemary Honey',
+  'Heather Honey',
+  'Wild Cherry Honey',
+  'Apple Blossom Honey',
+  'Alfalfa Honey',
+  'Coffee Blossom Honey',
+];
+
+const MULTIFLORAL_NAMES = [
+  'Wildflower Honey',
+  'Forest Honey',
+  'Mountain Honey',
+  'Multi-Flora Honey',
+];
+
+const SPECIAL_NAMES = [
+  'Raw Honey',
+  'Organic Honey',
+  'Comb Honey',
+  'Creamed Honey',
+  'Chunk Honey',
+  'Filtered Honey',
+  'Unfiltered Honey',
+];
+
+const HONEYDEW_NAMES = [
+  'Pine Honey',
+  'Oak Honey',
+  'Fir Honey',
+];
+
+const MONOFLORAL_IMAGES = [
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwbHFz2TQLnH8igu5a-wuZdFtdPoAogQylZw&s',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMV6MZd5XOt4H2FG0E9ZInxsom56ucwBBGqw&s',
+  'https://www.honeyhut.in/cdn/shop/files/Acacia-Honey-2.jpg?v=1690302751&width=1200',
+];
+
+const MULTIFLORAL_IMAGES = [
+  'https://images-cdn.ubuy.co.in/636401ff8736565dbc5d5163-sandt-39-s-wildflower-honey-unfiltered.jpg',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe3BOE-tn1faAIC2g0zzWWJkZUXX4FNoiv4w&s',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_KYEF9YeJwkyRduUIO8wCI1kSS5iqLQL633llOJ-tw9M5Q6Csl9SkeOwgoLxzuKKB5rM&usqp=CAU',
+];
+
+const SPECIAL_IMAGES = [
+  'https://ajfan.store/cdn/shop/files/BlackForestHoney-300gm.webp?v=1738821847',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnm5BTslWPnO2PHp5gsgziHJaXB8SaU30kmg&s',
+];
+
+const HONEYDEW_IMAGES = [
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKygJyDqB03TStOgsGF9fQjQCP0QKdOLst9A&s',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdoykY1m8G3XzSqm734YFS-m_gIiez7R4l9A&s',
+];
+
+const makeId = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+const makeDescription = (name: string, type: HoneyType) => {
+  switch (type) {
+    case 'Monofloral Honey':
+      return `Single-origin bloom with clean, focused sweetness.`;
+    case 'Multifloral Honey':
+      return `Seasonal blossom blend with balanced floral notes.`;
+    case 'Special Honey':
+      return `${name.replace(' Honey', '')} style with a distinct texture and aroma.`;
+    case 'Honeydew':
+      return `Deep, resinous notes with a malty finish.`;
+    case 'Combos':
+      return `Curated pack for tasting and gifting.`;
+    default:
+      return `Small-batch honey with layered flavor and aroma.`;
+  }
+};
+
+const makeItems = (names: string[], type: HoneyType, basePrice: number, step: number, imagePool: string[]) => {
+  return names.map((name, index) => ({
+    id: makeId(name),
+    name,
+    price: Number((basePrice + (index % 5) * step).toFixed(2)),
+    honeyType: type,
+    imagePool,
+    description: makeDescription(name, type),
+  }));
+};
+
 const productBase: ProductVariantBase[] = [
+  ...makeItems(MONOFLORAL_NAMES, 'Monofloral Honey', 16, 1.5, MONOFLORAL_IMAGES),
+  ...makeItems(MULTIFLORAL_NAMES, 'Multifloral Honey', 12.5, 1.25, MULTIFLORAL_IMAGES),
+  ...makeItems(SPECIAL_NAMES, 'Special Honey', 13.5, 1.5, SPECIAL_IMAGES),
+  ...makeItems(HONEYDEW_NAMES, 'Honeydew', 16.5, 1.5, HONEYDEW_IMAGES),
   {
-    id: 'wildflower',
-    name: 'Wildflower Honey',
-    price: 12.5,
+    id: 'taster-pack',
+    name: 'Taster Flight Pack',
+    price: 32,
+    honeyType: 'Combos',
     imagePool: [
-      'https://images-cdn.ubuy.co.in/636401ff8736565dbc5d5163-sandt-39-s-wildflower-honey-unfiltered.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe3BOE-tn1faAIC2g0zzWWJkZUXX4FNoiv4w&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_KYEF9YeJwkyRduUIO8wCI1kSS5iqLQL633llOJ-tw9M5Q6Csl9SkeOwgoLxzuKKB5rM&usqp=CAU',
+      'https://sc04.alicdn.com/kf/H1d7101e21b2d4eecbbbdc966acc82bb8K/227759182/H1d7101e21b2d4eecbbbdc966acc82bb8K.jpg',
     ],
-    description: 'Unique flavor profile with hints of wildflowers.'
+    description: 'Explore three terroirs side-by-side.'
   },
   {
-    id: 'forest',
-    name: 'Forest Honey',
-    price: 15,
+    id: 'immune-boost',
+    name: 'Immunity Boost Duo',
+    price: 26,
+    honeyType: 'Combos',
     imagePool: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKygJyDqB03TStOgsGF9fQjQCP0QKdOLst9A&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdoykY1m8G3XzSqm734YFS-m_gIiez7R4l9A&s',
+      'https://asmitaorganicfarm.com/cdn/shop/articles/feature_image-01_1.jpg?v=1732791937&width=1100',
     ],
-    description: 'Rich, complex flavors with notes of dark chocolate and coffee.'
+    description: 'A duo crafted for daily rituals and warmth.'
   },
   {
-    id: 'acacia',
-    name: 'Acacia Honey',
-    price: 18,
+    id: 'gift-crate',
+    name: 'Artisan Gift Crate',
+    price: 54,
+    honeyType: 'Combos',
     imagePool: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwbHFz2TQLnH8igu5a-wuZdFtdPoAogQylZw&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMV6MZd5XOt4H2FG0E9ZInxsom56ucwBBGqw&s',
-      'https://www.honeyhut.in/cdn/shop/files/Acacia-Honey-2.jpg?v=1690302751&width=1200',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV8CV2agHY_-V3YjOraNvrXdoRDNYoNOjLEQ&s',
     ],
-    description: 'Light & delicate with slow crystallization.'
-  },
-  {
-    id: 'black-forest-honey',
-    name: 'Black Forest Honey',
-    price: 14,
-    imagePool: [
-      'https://ajfan.store/cdn/shop/files/BlackForestHoney-300gm.webp?v=1738821847',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnm5BTslWPnO2PHp5gsgziHJaXB8SaU30kmg&s',
-    ],
-    description: 'Rich, complex flavors with notes of dark chocolate and coffee.'
+    description: 'A curated trio for gifting and celebrations.'
   }
 ];
 
@@ -54,9 +149,35 @@ export const Products = () => {
   const { addToCart } = useCart();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [filters, setFilters] = useState<ProductFilterState>({ query: '', min: '', max: '', sort: '' });
-  const products: Product[] = useMemo(() => {
-    return productBase.map(p => ({ id: p.id, name: p.name, price: p.price, description: p.description, image: p.imagePool[Math.floor(Math.random() * p.imagePool.length)] }));
+  const [selectedType, setSelectedType] = useState<HoneyType>('Monofloral Honey');
+  const products: (Product & { honeyType: HoneyType })[] = useMemo(() => {
+    return productBase.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      description: p.description,
+      image: p.imagePool[Math.floor(Math.random() * p.imagePool.length)],
+      honeyType: p.honeyType
+    }));
   }, []);
+  const totalForType = useMemo(() => products.filter(p => p.honeyType === selectedType).length, [products, selectedType]);
+  const filteredProducts = useMemo(() => {
+    let shown = products.filter(p => p.honeyType === selectedType);
+    if (filters.query) {
+      const q = filters.query.toLowerCase();
+      shown = shown.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
+    }
+    const min = parseFloat(filters.min) || 0;
+    const max = parseFloat(filters.max) || Infinity;
+    shown = shown.filter(p => p.price >= min && p.price <= max);
+    switch (filters.sort) {
+      case 'price-asc': shown.sort((a,b)=>a.price-b.price); break;
+      case 'price-desc': shown.sort((a,b)=>b.price-a.price); break;
+      case 'name-asc': shown.sort((a,b)=>a.name.localeCompare(b.name)); break;
+      case 'name-desc': shown.sort((a,b)=>b.name.localeCompare(a.name)); break;
+    }
+    return shown;
+  }, [filters, products, selectedType]);
 
   // Card tilt effect
   useEffect(() => {
@@ -84,48 +205,31 @@ export const Products = () => {
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Our Collection</h2>
         <p className="text-honey-100/80 max-w-2xl mx-auto">Curated raw honeys capturing the unique flavor profile of diverse terroirs and blooming seasons.</p>
       </div>
+      <nav aria-label="Honey type" className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8">
+        {HONEY_TYPES.map(type => {
+          const isActive = type === selectedType;
+          return (
+            <button
+              key={type}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => setSelectedType(type)}
+              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-colors ${isActive ? 'bg-honey-500 text-black shadow-glow' : 'bg-neutral-900/40 text-honey-200 border border-honey-700/40 hover:text-honey-50 hover:border-honey-600/60'}`}
+            >
+              {type}
+            </button>
+          );
+        })}
+      </nav>
       <SearchFilterBar onChange={setFilters} />
-      {(() => {
-        let shown = [...products];
-        if (filters.query) {
-          const q = filters.query.toLowerCase();
-            shown = shown.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
-        }
-        const min = parseFloat(filters.min) || 0;
-        const max = parseFloat(filters.max) || Infinity;
-        shown = shown.filter(p => p.price >= min && p.price <= max);
-        switch (filters.sort) {
-          case 'price-asc': shown.sort((a,b)=>a.price-b.price); break;
-          case 'price-desc': shown.sort((a,b)=>b.price-a.price); break;
-          case 'name-asc': shown.sort((a,b)=>a.name.localeCompare(b.name)); break;
-          case 'name-desc': shown.sort((a,b)=>b.name.localeCompare(a.name)); break;
-        }
-        return (
-          <p className="text-xs text-honey-100/50 mb-4">Showing {shown.length} / {products.length} products</p>
-        );
-      })()}
-  <div ref={containerRef} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-        {(() => {
-          let shown = [...products];
-          if (filters.query) {
-            const q = filters.query.toLowerCase();
-            shown = shown.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
-          }
-          const min = parseFloat(filters.min) || 0;
-          const max = parseFloat(filters.max) || Infinity;
-          shown = shown.filter(p => p.price >= min && p.price <= max);
-          switch (filters.sort) {
-            case 'price-asc': shown.sort((a,b)=>a.price-b.price); break;
-            case 'price-desc': shown.sort((a,b)=>b.price-a.price); break;
-            case 'name-asc': shown.sort((a,b)=>a.name.localeCompare(b.name)); break;
-            case 'name-desc': shown.sort((a,b)=>b.name.localeCompare(a.name)); break;
-          }
-          return shown.map(p => (
+      <p className="text-xs text-honey-100/50 mb-4">Showing {filteredProducts.length} / {totalForType} in {selectedType}</p>
+      <div ref={containerRef} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+        {filteredProducts.map(p => (
           <motion.div
             key={p.id}
-    whileHover={{ y: -6 }}
-    className="product-card group relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg will-change-transform"
-    style={{ transform: 'perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))', transition: 'transform 0.25s ease' }}
+            whileHover={{ y: -6 }}
+            className="product-card group relative rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30 backdrop-blur-md shadow-lg will-change-transform"
+            style={{ transform: 'perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))', transition: 'transform 0.25s ease' }}
           >
             <div className="relative aspect-square overflow-hidden">
               <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1800ms]" loading="lazy" />
@@ -151,8 +255,7 @@ export const Products = () => {
               </div>
             </div>
           </motion.div>
-          ));
-        })()}
+        ))}
       </div>
     </SectionWrapper>
   );
