@@ -1,6 +1,12 @@
 import { SectionWrapper } from '../ui/SectionWrapper';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import {
+  buildImageKitSrcSet,
+  imageKitUrlForWidth,
+  isImageKitUrl,
+  uploadImageKitFile,
+} from '../../lib/imagekit';
 
 // Base images (duplicated for seamless loop)
 const imagesBase = [
@@ -28,6 +34,27 @@ const imagesBase = [
 export const Gallery = () => {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [uploads, setUploads] = useState<string[]>([]);
+  const [uploadNote, setUploadNote] = useState('');
+
+  useEffect(() => {
+    const raw = localStorage.getItem('honeygo_gallery_uploads');
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw) as string[];
+        if (Array.isArray(parsed)) {
+          setUploads(parsed.filter((url) => typeof url === 'string' && isImageKitUrl(url)));
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('honeygo_gallery_uploads', JSON.stringify(uploads));
+  }, [uploads]);
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -70,27 +97,82 @@ export const Gallery = () => {
       window.removeEventListener('resize', setup);
       tlRef.current?.kill();
     };
-  }, []);
+  }, [uploads.length]);
 
-  const loopImages = [...imagesBase, ...imagesBase];
+  const galleryImages = useMemo(() => {
+    const uniqueUploads = uploads.filter((url) => isImageKitUrl(url));
+    return [...uniqueUploads, ...imagesBase];
+  }, [uploads]);
+
+  const loopImages = useMemo(() => [...galleryImages, ...galleryImages], [galleryImages]);
+
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const limit = 6;
+    const selected = Array.from(files).slice(0, limit);
+    setUploadNote('Uploading images to ImageKit...');
+    try {
+      const urls = await Promise.all(
+        selected.map((file) => uploadImageKitFile(file, '/gallery'))
+      );
+      setUploads((prev) => [...urls, ...prev].slice(0, 12));
+      setUploadNote('Images uploaded for gallery.');
+      setTimeout(() => setUploadNote(''), 2000);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Upload failed.';
+      setUploadNote(message);
+      setTimeout(() => setUploadNote(''), 2500);
+    }
+  };
+
+  const handleVideoUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadNote('Uploading video to ImageKit...');
+    try {
+      const url = await uploadImageKitFile(file, '/about');
+      localStorage.setItem('honeygo_about_video', url);
+      setUploadNote('Background video updated.');
+      setTimeout(() => setUploadNote(''), 2000);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Upload failed.';
+      setUploadNote(message);
+      setTimeout(() => setUploadNote(''), 2500);
+    }
+  };
 
   return (
     <SectionWrapper id="gallery" className="text-honey-50">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Harvest Moments</h2>
         <p className="text-honey-100/70 max-w-2xl mx-auto">Behind-the-scenes glimpses from forest edges, wildflower fields, and artisan extraction days.</p>
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={() => setAdminOpen(true)}
+            className="rounded-full border border-honey-600/50 px-4 py-2 text-xs font-semibold text-honey-200 hover:border-honey-500"
+          >
+            Admin Upload
+          </button>
+        </div>
       </div>
       <div className="relative overflow-hidden">
         <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black via-black/60 to-transparent z-10" />
         <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black via-black/60 to-transparent z-10" />
         <div ref={trackRef} className="flex gap-6 will-change-transform">
-          {loopImages.map((src, i) => (
+          {loopImages.map((src, i) => {
+            const isKit = isImageKitUrl(src);
+            const displaySrc = isKit ? imageKitUrlForWidth(src, 520) : src;
+            const srcSet = isKit ? buildImageKitSrcSet(src, [240, 360, 520, 720]) : undefined;
+            const sizes = isKit ? '(max-width: 640px) 180px, (max-width: 1024px) 220px, 260px' : undefined;
+            return (
             <div
               key={i}
               className="wave-img relative shrink-0 w-[260px] h-[320px] rounded-2xl overflow-hidden bg-neutral-900/40 border border-honey-700/30"
             >
               <img
-                src={src}
+                src={displaySrc}
+                srcSet={srcSet}
+                sizes={sizes}
                 alt="Gallery"
                 loading="lazy"
                 className="w-full h-full object-cover select-none pointer-events-none"
@@ -98,9 +180,65 @@ export const Gallery = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
-          ))}
+          );
+          })}
         </div>
       </div>
+      {adminOpen && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <button
+            type="button"
+            aria-label="Close admin upload"
+            onClick={() => setAdminOpen(false)}
+            className="absolute inset-0 bg-black/70"
+          />
+          <div className="relative w-full max-w-2xl rounded-3xl border border-white/20 bg-white/10 backdrop-blur-2xl shadow-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.3em] text-honey-200/70">Admin</p>
+                <h3 className="text-lg font-semibold text-honey-100">Upload Media</h3>
+              </div>
+              <button onClick={() => setAdminOpen(false)} className="text-honey-200 hover:text-white">✕</button>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+                <p className="text-sm text-honey-100/80 mb-2">Gallery Images</p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleImageUpload(e.target.files)}
+                  className="w-full text-xs text-honey-100/70"
+                />
+                <button
+                  type="button"
+                  onClick={() => setUploads([])}
+                  className="mt-3 text-xs text-honey-200 hover:text-honey-100"
+                >
+                  Clear uploaded images
+                </button>
+              </div>
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4">
+                <p className="text-sm text-honey-100/80 mb-2">About Background Video</p>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => handleVideoUpload(e.target.files?.[0] ?? null)}
+                  className="w-full text-xs text-honey-100/70"
+                />
+                <button
+                  type="button"
+                  onClick={() => localStorage.removeItem('honeygo_about_video')}
+                  className="mt-3 text-xs text-honey-200 hover:text-honey-100"
+                >
+                  Reset background video
+                </button>
+              </div>
+            </div>
+            {uploadNote && <p className="mt-4 text-xs text-honey-100/80">{uploadNote}</p>}
+          </div>
+        </div>
+      )}
     </SectionWrapper>
   );
 };

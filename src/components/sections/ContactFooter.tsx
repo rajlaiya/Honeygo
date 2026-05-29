@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 export const ContactFooter = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const [policy, setPolicy] = useState<null | 'privacy' | 'terms' | 'cookies'>(null);
 
   const policyContent: Record<string, { title: string; body: string }> = {
@@ -33,12 +34,23 @@ export const ContactFooter = () => {
   }, [policy]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (errors[e.target.name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
+    }
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return alert('Please complete all fields');
+    const nextErrors: { name?: string; email?: string; message?: string } = {};
+    const name = form.name.trim();
+    const email = form.email.trim();
+    const message = form.message.trim();
+    if (name.length < 2) nextErrors.name = 'Please enter at least 2 characters.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Please enter a valid email address.';
+    if (message.length < 10) nextErrors.message = 'Please enter at least 10 characters.';
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
     setSubmitted(true);
     setTimeout(() => setForm({ name: '', email: '', message: '' }), 600);
   };
@@ -61,8 +73,10 @@ export const ContactFooter = () => {
                     placeholder="Name"
                     value={form.name}
                     onChange={handleChange}
+                    aria-invalid={errors.name ? 'true' : 'false'}
                     className="w-full rounded-lg bg-neutral-900/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
                   />
+                  {errors.name && <p className="mt-1 text-xs text-rose-200">{errors.name}</p>}
                 </div>
                 <div>
                   <input
@@ -71,8 +85,10 @@ export const ContactFooter = () => {
                     placeholder="Email"
                     value={form.email}
                     onChange={handleChange}
+                    aria-invalid={errors.email ? 'true' : 'false'}
                     className="w-full rounded-lg bg-neutral-900/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
                   />
+                  {errors.email && <p className="mt-1 text-xs text-rose-200">{errors.email}</p>}
                 </div>
                 <div>
                   <textarea
@@ -81,8 +97,10 @@ export const ContactFooter = () => {
                     value={form.message}
                     onChange={handleChange}
                     rows={5}
+                    aria-invalid={errors.message ? 'true' : 'false'}
                     className="w-full rounded-lg bg-neutral-900/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
                   />
+                  {errors.message && <p className="mt-1 text-xs text-rose-200">{errors.message}</p>}
                 </div>
                 <button
                   type="submit"

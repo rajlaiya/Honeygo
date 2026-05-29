@@ -1,10 +1,18 @@
+import { useEffect, useState } from 'react';
 import aboutVideo from '../../assets/bg_a_video.mp4';
 
 export const About = () => {
+  const [videoSrc, setVideoSrc] = useState(aboutVideo);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('honeygo_about_video');
+    if (stored) setVideoSrc(stored);
+  }, []);
+
   return (
     <section id="about" className="relative min-h-[70vh] w-full overflow-hidden text-honey-50">
       <video
-        src={aboutVideo}
+        src={videoSrc}
         className="absolute inset-0 h-full w-full object-cover"
         autoPlay
         loop

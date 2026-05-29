@@ -21,12 +21,13 @@ export const CartSidebar = () => {
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState('');
+  const [couponNotice, setCouponNotice] = useState('');
 
   const coupons = useMemo(
     () => [
-      { code: 'HONEY10', percent: 10 },
-      { code: 'HONEY13', percent: 13 },
-      { code: 'HONEY16', percent: 16 },
+      { code: 'HONEY10', percent: 10, minSubtotal: 30, maxDiscount: 12, expires: '2026-12-31' },
+      { code: 'HONEY13', percent: 13, minSubtotal: 45, maxDiscount: 18, expires: '2026-12-31' },
+      { code: 'HONEY16', percent: 16, minSubtotal: 60, maxDiscount: 24, expires: '2026-12-31' },
     ],
     []
   );
@@ -37,7 +38,11 @@ export const CartSidebar = () => {
   );
 
   const discountValue = useMemo(
-    () => (activeCoupon ? (total * activeCoupon.percent) / 100 : 0),
+    () => {
+      if (!activeCoupon) return 0;
+      const percentValue = (total * activeCoupon.percent) / 100;
+      return Math.min(percentValue, activeCoupon.maxDiscount ?? percentValue);
+    },
     [activeCoupon, total]
   );
 
@@ -117,12 +122,38 @@ export const CartSidebar = () => {
     const match = coupons.find((c) => c.code === code);
     if (!match) {
       setCouponError('Invalid coupon code');
+      setCouponNotice('');
+      setAppliedCoupon(null);
+      return;
+    }
+    const today = new Date();
+    const expiry = new Date(`${match.expires}T23:59:59`);
+    if (today > expiry) {
+      setCouponError('Coupon expired');
+      setCouponNotice('');
+      setAppliedCoupon(null);
+      return;
+    }
+    if (total < match.minSubtotal) {
+      setCouponError(`Minimum order $${match.minSubtotal.toFixed(2)} required`);
+      setCouponNotice('');
+      setAppliedCoupon(null);
       return;
     }
     setAppliedCoupon(match.code);
     setCouponInput(match.code);
     setCouponError('');
+    setCouponNotice(`Applied ${match.percent}% off (max $${match.maxDiscount.toFixed(2)})`);
   };
+
+  useEffect(() => {
+    if (!activeCoupon) return;
+    if (total < activeCoupon.minSubtotal) {
+      setAppliedCoupon(null);
+      setCouponNotice('');
+      setCouponError(`Coupon removed: minimum order $${activeCoupon.minSubtotal.toFixed(2)} required`);
+    }
+  }, [activeCoupon, total]);
 
   const resolveInventoryItem = (id: string) => inventoryPool.find((item) => item.id === id) ?? null;
 
@@ -179,6 +210,7 @@ export const CartSidebar = () => {
                   <p className="text-xs uppercase tracking-[0.25em] text-honey-200/60">Code</p>
                   <p className="mt-2 text-lg font-semibold text-honey-100">{coupon.code}</p>
                   <p className="mt-1 text-sm text-honey-200/80">{coupon.percent}% off</p>
+                  <p className="mt-1 text-[11px] text-honey-100/60">Min ${coupon.minSubtotal.toFixed(0)} · Max ${coupon.maxDiscount.toFixed(0)}</p>
                   <button
                     onClick={() => {
                       applyCoupon(coupon.code);
@@ -207,6 +239,7 @@ export const CartSidebar = () => {
                 </button>
               </div>
               {couponError && <p className="mt-2 text-xs text-rose-200">{couponError}</p>}
+              {couponNotice && <p className="mt-2 text-xs text-honey-100/70">{couponNotice}</p>}
               {activeCoupon && (
                 <p className="mt-2 text-xs text-honey-100/70">Applied: {activeCoupon.code} ({activeCoupon.percent}% off)</p>
               )}
@@ -420,6 +453,7 @@ export const CartSidebar = () => {
                             </button>
                           </div>
                           {couponError && <p className="text-[11px] text-rose-200">{couponError}</p>}
+                          {couponNotice && <p className="text-[11px] text-honey-100/70">{couponNotice}</p>}
                           {activeCoupon && (
                             <p className="text-[11px] text-honey-100/70">Applied: {activeCoupon.code} ({activeCoupon.percent}% off)</p>
                           )}

@@ -35,6 +35,7 @@ export const Reviews = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [form, setForm] = useState({ name: '', text: '', rating: 5 });
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; text?: string }>({});
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(3);
 
@@ -97,7 +98,13 @@ export const Reviews = () => {
       <form
         onSubmit={e => {
           e.preventDefault();
-          if (!form.name || !form.text) return;
+          const nextErrors: { name?: string; text?: string } = {};
+          const name = form.name.trim();
+          const text = form.text.trim();
+          if (name.length < 2) nextErrors.name = 'Please enter at least 2 characters.';
+          if (text.length < 10) nextErrors.text = 'Please enter at least 10 characters.';
+          setErrors(nextErrors);
+          if (Object.keys(nextErrors).length > 0) return;
           const nextLength = testimonials.length + 1;
           const nextPageCount = Math.max(1, Math.ceil(nextLength / pageSize));
           setTestimonials(prev => [...prev, { name: form.name, text: form.text, rating: form.rating }]);
@@ -113,6 +120,7 @@ export const Reviews = () => {
             value={form.name}
             onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
             placeholder="Your name"
+            aria-invalid={errors.name ? 'true' : 'false'}
             className="rounded-lg bg-neutral-800/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
           />
           <select
@@ -124,13 +132,16 @@ export const Reviews = () => {
             {[5,4,3,2,1].map(r => <option key={r} value={r}>{r} ★</option>)}
           </select>
         </div>
+        {errors.name && <p className="text-xs text-rose-200">{errors.name}</p>}
         <textarea
           value={form.text}
           onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
           placeholder="Share your experience..."
           rows={4}
+          aria-invalid={errors.text ? 'true' : 'false'}
           className="rounded-lg bg-neutral-800/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
         />
+        {errors.text && <p className="text-xs text-rose-200">{errors.text}</p>}
         <button className="justify-self-start px-6 py-3 rounded-full bg-honey-500 text-black text-sm font-semibold hover:bg-honey-400 shadow-glow">Submit Review</button>
       </form>
       {submitted && (

@@ -252,6 +252,30 @@ export const Products = () => {
     return filteredProducts.slice(start, start + pageSize);
   }, [filteredProducts, page, pageSize]);
 
+  const productJsonLd = useMemo(() => {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: productBase.map((p, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: p.name,
+          image: p.imagePool[0],
+          description: p.description,
+          sku: p.id,
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'USD',
+            price: p.price.toFixed(2),
+            availability: 'https://schema.org/InStock'
+          }
+        }
+      }))
+    };
+  }, []);
+
   // Card tilt effect
   useEffect(() => {
     const root = containerRef.current;
@@ -274,6 +298,10 @@ export const Products = () => {
 
   return (
     <SectionWrapper id="products" className="text-honey-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-honey-400 mb-4">Our Collection</h2>
         <p className="text-honey-100/80 max-w-2xl mx-auto">Curated raw honeys capturing the unique flavor profile of diverse terroirs and blooming seasons.</p>
