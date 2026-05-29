@@ -78,16 +78,16 @@ export const HoneyUses = () => {
       className="text-honey-50"
       animation={(el) => {
         const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const header = el.querySelector('.uses-header');
-        const headerItems = header ? header.children : [];
-  const rows = el.querySelectorAll('.use-card');
+          const header = el.querySelector('.uses-header');
+          const headerItems = header ? header.children : [];
+          const rows = el.querySelectorAll('.use-card');
 
         if (prefersReduced) {
           gsap.set([headerItems, rows], { autoAlpha: 1, y: 0 });
           return;
         }
 
-  gsap.set(rows, { autoAlpha: 0, y: 70, clipPath: 'inset(0 0 100% 0)', transformOrigin: '50% 0%' });
+      gsap.set(rows, { autoAlpha: 0, y: 70, clipPath: 'inset(0 0 100% 0)', transformOrigin: '50% 0%' });
         if (header) gsap.set(headerItems, { autoAlpha: 0, y: 40 });
 
         gsap.timeline({
@@ -129,22 +129,22 @@ export const HoneyUses = () => {
         {useMap.map((u) => (
           <div
             key={u.condition}
-            className="use-card group relative rounded-3xl overflow-hidden bg-neutral-900/60 border border-honey-400/10 backdrop-blur p-0 shadow-lg hover:shadow-honey-500/20 transition-shadow will-change-transform"
+            className="use-card group relative min-h-[320px] rounded-3xl overflow-hidden bg-neutral-900/60 border border-honey-400/10 backdrop-blur shadow-lg hover:shadow-honey-500/30"
           >
-            <div className="relative aspect-[5/3] overflow-hidden">
-              <img
-                src={u.image}
-                alt={u.suggested}
-                loading="lazy"
-                className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-[2000ms] ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            </div>
-            <div className="p-6 md:p-7 space-y-3">
+            <img
+              src={u.image}
+              alt={u.suggested}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+            <div className="relative z-10 flex h-full flex-col justify-end p-6 md:p-7 space-y-3">
               <p className="text-[11px] tracking-widest uppercase text-honey-300/70">Condition</p>
               <h3 className="text-xl font-semibold text-honey-300">{u.condition}</h3>
               <p className="text-sm font-medium text-honey-200/80">Suggested: {u.suggested}</p>
-              <p className="text-honey-100/75 leading-relaxed text-sm md:text-[15px]">{u.rationale}</p>
+              <p className="text-honey-100/80 leading-relaxed text-sm md:text-[15px] opacity-0 group-hover:opacity-100">
+                {u.rationale}
+              </p>
             </div>
           </div>
         ))}

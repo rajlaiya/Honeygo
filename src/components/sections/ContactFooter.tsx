@@ -1,5 +1,4 @@
 import { SectionWrapper } from '../ui/SectionWrapper';
-import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 export const ContactFooter = () => {
@@ -85,14 +84,12 @@ export const ContactFooter = () => {
                     className="w-full rounded-lg bg-neutral-900/60 border border-honey-700/40 px-4 py-3 text-sm placeholder:text-honey-100/30 focus:outline-none focus:ring-2 focus:ring-honey-500"
                   />
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   type="submit"
                   className="w-full py-3 rounded-full bg-honey-500 text-black font-semibold hover:bg-honey-400 shadow-glow"
                 >
                   Send Message
-                </motion.button>
+                </button>
                 {submitted && <p className="text-xs text-honey-300">Thanks! We will reply shortly.</p>}
               </form>
             </div>
@@ -126,7 +123,6 @@ export const ContactFooter = () => {
                 <p className="uppercase tracking-widest text-honey-400 mb-2 text-[11px]">Shop</p>
                 <ul className="space-y-1 text-honey-100/60">
                   <li><a className="hover:text-honey-300" href="#products">Products</a></li>
-                  <li><a className="hover:text-honey-300" href="#combos">Combos</a></li>
                   <li><a className="hover:text-honey-300" href="#gallery">Gallery</a></li>
                 </ul>
               </div>
@@ -167,21 +163,13 @@ export const ContactFooter = () => {
       </div>
       {/* Policy Dialog */}
       {policy && (
-        <motion.div
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           aria-modal="true"
           role="dialog"
         >
           <div onClick={() => setPolicy(null)} className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 40, opacity: 0 }}
-            className="relative w-full max-w-lg rounded-2xl bg-neutral-950/95 border border-honey-700/40 p-8 shadow-2xl"
-          >
+          <div className="relative w-full max-w-lg rounded-2xl bg-neutral-950/95 border border-honey-700/40 p-8 shadow-2xl">
             <h3 className="text-xl font-display font-semibold text-honey-300 mb-4">{policyContent[policy].title}</h3>
             <p className="text-sm leading-relaxed text-honey-100/80 whitespace-pre-line mb-6">{policyContent[policy].body}</p>
             <div className="flex justify-end gap-3">
@@ -195,8 +183,8 @@ export const ContactFooter = () => {
               onClick={() => setPolicy(null)}
               className="absolute top-3 right-3 text-honey-400 hover:text-honey-200"
             >✕</button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </footer>
   );

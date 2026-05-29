@@ -1,8 +1,24 @@
 import { motion } from 'framer-motion';
-import { SectionWrapper } from '../ui/SectionWrapper';
-import { useCart, type Product } from '../../context/CartContext';
 import { useMemo, useRef, useEffect, useState } from 'react';
+import { useCart, type Product } from '../../context/CartContext';
 import { SearchFilterBar, type ProductFilterState } from '../ui/SearchFilterBar';
+import { SectionWrapper } from '../ui/SectionWrapper';
+import acaciaImage from '../../assets/Honey/Acacia.png';
+import alfalfaImage from '../../assets/Honey/Alfalfa.png';
+import appleImage from '../../assets/Honey/Apple.png';
+import cloverImage from '../../assets/Honey/Clover.png';
+import eucalyptusImage from '../../assets/Honey/Eucalyptus.png';
+import heatherImage from '../../assets/Honey/Heather.png';
+import jamunImage from '../../assets/Honey/Jamun.png';
+import lavenderImage from '../../assets/Honey/lavender.png';
+import manukaImage from '../../assets/Honey/Manuka.png';
+import mustardImage from '../../assets/Honey/Mustard.png';
+import neemImage from '../../assets/Honey/Neem.png';
+import orangeImage from '../../assets/Honey/Orange.png';
+import rosemaryImage from '../../assets/Honey/Rosemary.png';
+import sageImage from '../../assets/Honey/Sage.png';
+import sidrImage from '../../assets/Honey/Sidr.png';
+import wildCherryImage from '../../assets/Honey/Wild Cherry.png';
 
 const HONEY_TYPES = ['Monofloral Honey', 'Multifloral Honey', 'Special Honey', 'Honeydew', 'Combos'] as const;
 type HoneyType = typeof HONEY_TYPES[number];
@@ -62,6 +78,25 @@ const MONOFLORAL_IMAGES = [
   'https://www.honeyhut.in/cdn/shop/files/Acacia-Honey-2.jpg?v=1690302751&width=1200',
 ];
 
+const MONOFLORAL_IMAGE_MAP: Record<string, string> = {
+  'Acacia Honey': acaciaImage,
+  'Alfalfa Honey': alfalfaImage,
+  'Apple Blossom Honey': appleImage,
+  'Clover Honey': cloverImage,
+  'Heather Honey': heatherImage,
+  'Manuka Honey': manukaImage,
+  'Sidr Honey': sidrImage,
+  'Eucalyptus Honey': eucalyptusImage,
+  'Lavender Honey': lavenderImage,
+  'Orange Blossom Honey': orangeImage,
+  'Mustard Honey': mustardImage,
+  'Rosemary Honey': rosemaryImage,
+  'Jamun Honey': jamunImage,
+  'Neem Honey': neemImage,
+  'Sage Honey': sageImage,
+  'Wild Cherry Honey': wildCherryImage,
+};
+
 const MULTIFLORAL_IMAGES = [
   'https://images-cdn.ubuy.co.in/636401ff8736565dbc5d5163-sandt-39-s-wildflower-honey-unfiltered.jpg',
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe3BOE-tn1faAIC2g0zzWWJkZUXX4FNoiv4w&s',
@@ -108,8 +143,22 @@ const makeItems = (names: string[], type: HoneyType, basePrice: number, step: nu
   }));
 };
 
+const makeMonofloralItems = (names: string[], basePrice: number, step: number) => {
+  return names.map((name, index) => {
+    const mappedImage = MONOFLORAL_IMAGE_MAP[name];
+    return {
+      id: makeId(name),
+      name,
+      price: Number((basePrice + (index % 5) * step).toFixed(2)),
+      honeyType: 'Monofloral Honey' as HoneyType,
+      imagePool: mappedImage ? [mappedImage] : MONOFLORAL_IMAGES,
+      description: makeDescription(name, 'Monofloral Honey'),
+    };
+  });
+};
+
 const productBase: ProductVariantBase[] = [
-  ...makeItems(MONOFLORAL_NAMES, 'Monofloral Honey', 16, 1.5, MONOFLORAL_IMAGES),
+  ...makeMonofloralItems(MONOFLORAL_NAMES, 16, 1.5),
   ...makeItems(MULTIFLORAL_NAMES, 'Multifloral Honey', 12.5, 1.25, MULTIFLORAL_IMAGES),
   ...makeItems(SPECIAL_NAMES, 'Special Honey', 13.5, 1.5, SPECIAL_IMAGES),
   ...makeItems(HONEYDEW_NAMES, 'Honeydew', 16.5, 1.5, HONEYDEW_IMAGES),
@@ -150,6 +199,8 @@ export const Products = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [filters, setFilters] = useState<ProductFilterState>({ query: '', min: '', max: '', sort: '' });
   const [selectedType, setSelectedType] = useState<HoneyType>('Monofloral Honey');
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(8);
   const products: (Product & { honeyType: HoneyType })[] = useMemo(() => {
     return productBase.map(p => ({
       id: p.id,
@@ -178,6 +229,28 @@ export const Products = () => {
     }
     return shown;
   }, [filters, products, selectedType]);
+
+  useEffect(() => {
+    const updatePageSize = () => setPageSize(window.innerWidth >= 1024 ? 8 : 4);
+    updatePageSize();
+    window.addEventListener('resize', updatePageSize);
+    return () => window.removeEventListener('resize', updatePageSize);
+  }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [filters, selectedType]);
+
+  const pageCount = useMemo(() => Math.max(1, Math.ceil(filteredProducts.length / pageSize)), [filteredProducts.length, pageSize]);
+
+  useEffect(() => {
+    setPage((current) => Math.min(current, pageCount - 1));
+  }, [pageCount]);
+
+  const pagedProducts = useMemo(() => {
+    const start = page * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, page, pageSize]);
 
   // Card tilt effect
   useEffect(() => {
@@ -212,7 +285,7 @@ export const Products = () => {
             <button
               key={type}
               type="button"
-              aria-pressed={isActive}
+              aria-pressed={isActive ? 'true' : 'false'}
               onClick={() => setSelectedType(type)}
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-colors ${isActive ? 'bg-honey-500 text-black shadow-glow' : 'bg-neutral-900/40 text-honey-200 border border-honey-700/40 hover:text-honey-50 hover:border-honey-600/60'}`}
             >
@@ -224,7 +297,7 @@ export const Products = () => {
       <SearchFilterBar onChange={setFilters} />
       <p className="text-xs text-honey-100/50 mb-4">Showing {filteredProducts.length} / {totalForType} in {selectedType}</p>
       <div ref={containerRef} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-        {filteredProducts.map(p => (
+        {pagedProducts.map(p => (
           <motion.div
             key={p.id}
             whileHover={{ y: -6 }}
@@ -256,6 +329,25 @@ export const Products = () => {
             </div>
           </motion.div>
         ))}
+      </div>
+      <div className="mt-8 flex items-center justify-center gap-4">
+        <button
+          type="button"
+          onClick={() => setPage((current) => Math.max(0, current - 1))}
+          disabled={page === 0}
+          className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold tracking-wide bg-neutral-900/40 text-honey-200 border border-honey-700/40 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Prev
+        </button>
+        <span className="text-xs sm:text-sm text-honey-100/70">Page {page + 1} of {pageCount}</span>
+        <button
+          type="button"
+          onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))}
+          disabled={page >= pageCount - 1}
+          className="px-4 py-2 rounded-full text-xs sm:text-sm font-semibold tracking-wide bg-honey-500 text-black shadow-glow disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
       </div>
     </SectionWrapper>
   );

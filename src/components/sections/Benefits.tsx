@@ -124,20 +124,24 @@ export const Benefits = () => {
         {benefits.map((b) => (
           <div
             key={b.title}
-            className="benefit-card group relative rounded-2xl overflow-hidden bg-neutral-900/60 border border-honey-400/10 backdrop-blur shadow-lg hover:shadow-honey-500/20 transition-shadow will-change-transform"
+            className="benefit-card group relative rounded-2xl overflow-hidden bg-neutral-900/60 border border-honey-400/10 backdrop-blur shadow-lg hover:shadow-honey-500/30"
           >
-            <div className="aspect-square overflow-hidden">
+            <div className="relative aspect-square">
               <img
                 src={b.image}
                 alt={b.title}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1600ms] ease-out"
+                className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/80 pointer-events-none" />
-            </div>
-            <div className="p-5 flex flex-col h-[210px]">
-              <h3 className="text-lg font-semibold text-honey-300 mb-2 tracking-wide">{b.title}</h3>
-              <p className="text-sm text-honey-100/75 leading-relaxed">{b.description}</p>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80" />
+              <div className="relative z-10 flex h-full flex-col justify-end p-5">
+                <h3 className="text-lg font-semibold text-honey-300 tracking-wide">
+                  {b.title}
+                </h3>
+                <p className="mt-2 text-sm text-honey-100/80 leading-relaxed opacity-0 group-hover:opacity-100">
+                  {b.description}
+                </p>
+              </div>
             </div>
           </div>
         ))}

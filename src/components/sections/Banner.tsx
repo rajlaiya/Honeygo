@@ -22,10 +22,10 @@ export const Banner = () => {
           <div className="flex flex-col sm:flex-row gap-4 sm:justify-center lg:justify-start">
             <motion.button
               whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }}
-              onClick={() => document.getElementById('combos')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-10 py-3 rounded-full bg-honey-500 text-black font-semibold shadow-glow hover:bg-honey-400"
             >
-              Grab Offer
+              Shop Collection
             </motion.button>
           </div>
         </motion.div>
