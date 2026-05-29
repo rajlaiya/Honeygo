@@ -7,7 +7,7 @@ type NavItem = {
 };
 
 export const SideNav = () => {
-  const iconClass = 'h-[clamp(14px,2.2vw,20px)] w-[clamp(14px,2.2vw,20px)]';
+  const iconClass = 'h-[var(--nav-icon)] w-[var(--nav-icon)]';
   const items: NavItem[] = useMemo(
     () => [
       {
@@ -114,9 +114,9 @@ export const SideNav = () => {
   }, [items]);
 
   return (
-    <nav className="fixed left-[clamp(10px,2vw,24px)] top-1/2 z-40 -translate-y-1/2" aria-label="Section navigation">
-      <div className="rounded-full border border-white/35 bg-white/20 px-[clamp(6px,1.4vw,10px)] py-[clamp(8px,1.8vw,14px)] shadow-[0_20px_50px_rgba(20,12,6,0.25)] backdrop-blur-2xl">
-        <ul className="flex flex-col gap-[clamp(6px,1.6vw,10px)]">
+    <nav className="side-nav fixed left-[var(--nav-left)] top-1/2 z-40 -translate-y-1/2" aria-label="Section navigation">
+      <div className="rounded-full border border-white/35 bg-white/20 px-[var(--nav-pad-x)] py-[var(--nav-pad-y)] shadow-[0_20px_50px_rgba(20,12,6,0.25)] backdrop-blur-2xl">
+        <ul className="flex flex-col gap-[var(--nav-gap)]">
           {items.map((item) => (
             <li key={item.id} className="relative">
               <a
@@ -124,7 +124,7 @@ export const SideNav = () => {
                 aria-label={item.label}
                 aria-current={activeId === item.id ? 'true' : undefined}
                 title={item.label}
-                className={`group flex h-[clamp(32px,6vw,44px)] w-[clamp(32px,6vw,44px)] items-center justify-center rounded-full transition ${
+                className={`group flex h-[var(--nav-size)] w-[var(--nav-size)] items-center justify-center rounded-full transition ${
                   activeId === item.id
                     ? 'bg-white/80 text-amber-900 shadow-[0_12px_24px_rgba(255,255,255,0.3)]'
                     : 'text-amber-900/70 hover:bg-white/40'
@@ -133,7 +133,7 @@ export const SideNav = () => {
                 {item.icon}
                 <span className="sr-only">{item.label}</span>
               </a>
-              <span className="pointer-events-none absolute left-[clamp(2.75rem,6vw,3.75rem)] top-1/2 -translate-y-1/2 rounded-full bg-black/80 px-[clamp(8px,2vw,12px)] py-[clamp(4px,1vw,6px)] text-[clamp(9px,1.4vw,11px)] uppercase tracking-[0.3em] text-honey-100 opacity-0 shadow-lg transition group-hover:opacity-100">
+              <span className="pointer-events-none absolute left-[var(--nav-tooltip-left)] top-1/2 -translate-y-1/2 rounded-full bg-black/80 px-[var(--nav-tooltip-pad-x)] py-[var(--nav-tooltip-pad-y)] text-[var(--nav-tooltip-fs)] uppercase tracking-[0.3em] text-honey-100 opacity-0 shadow-lg transition group-hover:opacity-100">
                 {item.label}
               </span>
             </li>

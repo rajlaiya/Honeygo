@@ -138,19 +138,21 @@ export const CartSidebar = () => {
 
   return (
     <>
-      <div className="fixed top-6 right-6 z-40 flex items-center gap-3">
-        <button
-          onClick={() => setDiscountOpen(true)}
-          className="rounded-full border border-honey-400/60 bg-white/10 px-4 py-2 text-xs font-semibold text-honey-200 shadow-glow backdrop-blur hover:bg-white/20"
-        >
-          Discount
-        </button>
-        <button
-          onClick={() => setOpen(true)}
-          className="rounded-full bg-honey-500 text-black font-semibold px-5 py-2 shadow-glow hover:bg-honey-400 transition-colors"
-        >
-          Cart ({items.length})
-        </button>
+      <div className="fixed top-6 right-6 z-40">
+        <div className="flex items-center gap-3 rounded-full border border-white/15 bg-black/30 px-2 py-2 backdrop-blur-xl shadow-[0_12px_30px_rgba(10,6,2,0.35)]">
+          <button
+            onClick={() => setDiscountOpen(true)}
+            className="rounded-full border border-honey-400/60 bg-white/10 px-4 py-2 text-xs font-semibold text-honey-200 shadow-glow backdrop-blur hover:bg-white/20"
+          >
+            Discount
+          </button>
+          <button
+            onClick={() => setOpen(true)}
+            className="rounded-full bg-honey-500 text-black font-semibold px-5 py-2 shadow-glow hover:bg-honey-400 transition-colors"
+          >
+            Cart ({items.length})
+          </button>
+        </div>
       </div>
       {discountOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
