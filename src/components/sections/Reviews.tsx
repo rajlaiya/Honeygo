@@ -34,6 +34,7 @@ const initialTestimonials: Testimonial[] = [
 export const Reviews = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
   const [form, setForm] = useState({ name: '', text: '', rating: 5 });
+  const [submitted, setSubmitted] = useState(false);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(3);
 
@@ -102,6 +103,8 @@ export const Reviews = () => {
           setTestimonials(prev => [...prev, { name: form.name, text: form.text, rating: form.rating }]);
           setPage(nextPageCount - 1);
           setForm({ name: '', text: '', rating: 5 });
+          setSubmitted(true);
+          setTimeout(() => setSubmitted(false), 2400);
         }}
         className="max-w-xl mx-auto grid gap-4 bg-neutral-900/60 border border-honey-700/30 p-6 rounded-2xl"
       >
@@ -130,6 +133,11 @@ export const Reviews = () => {
         />
         <button className="justify-self-start px-6 py-3 rounded-full bg-honey-500 text-black text-sm font-semibold hover:bg-honey-400 shadow-glow">Submit Review</button>
       </form>
+      {submitted && (
+        <p className="mt-4 text-center font-marck text-xl text-honey-200">
+          Thanks for your feedback.
+        </p>
+      )}
     </SectionWrapper>
   );
 };
